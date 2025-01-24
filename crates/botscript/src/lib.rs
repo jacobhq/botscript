@@ -33,12 +33,12 @@ fn generate_java_from_tokens(tokens: Vec<Token>) -> Vec<String> {
     let mut java_lines = Vec::new();
     for t in tokens {
         match t {
-            Token::Drive(i) => java_lines.push(format!("encoderDrive(DRIVE_SPEED, {}, {} 5.0);", i, i)),
+            Token::Drive(i) => java_lines.push(format!("        encoderDrive(DRIVE_SPEED, {}, {}, 5.0);", i, i)),
             Token::Turn(angle) => java_lines.push(format!(
-                "encoderDrive(TURN_SPEED, (Math.PI * TRACK_WIDTH * {} / 180), -(Math.PI * TRACK_WIDTH * {} / 180), 5.0);",
+                "        encoderDrive(TURN_SPEED, (Math.PI * TRACK_WIDTH * {} / 180), -(Math.PI * TRACK_WIDTH * {} / 180), 5.0);",
                 angle, angle
             )),
-            Token::Delay(i) => java_lines.push(format!("sleep({});", i)),
+            Token::Delay(i) => java_lines.push(format!("        sleep({});", i)),
             Token::Comment(_) => {}
         }
     }
