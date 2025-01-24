@@ -1,31 +1,45 @@
+use std::fmt;
+
 enum Token {
     Drive(i32),
     Turn(i32),
     Delay(i32),
-    Comment(String),
+    Comment,
 }
 
 #[derive(Debug)]
-enum Error<'a> {
-    UnknownCommand(&'a str),
+pub enum Error {
+    UnknownCommandError(String),
+    ArgumentParseError(String)
 }
 
-pub fn compile_file(file: String) -> Vec<String> {
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Error::UnknownCommandError(cmd) => write!(f, "UnknownCommandError at: {}", cmd),
+            Error::ArgumentParseError(arg) => write!(f, "ArgumentParseError at: {}", arg),
+        }
+    }
+}
+
+impl std::error::Error for Error {}
+
+pub fn compile_file(file: String) -> Result<Vec<String>, Error> {
     let mut tokens = Vec::new();
     for line in file.lines() {
-        tokens.push(compile_line(line).unwrap());
+        tokens.push(compile_line(line)?);
     }
-    generate_java_from_tokens(tokens)
+    Ok(generate_java_from_tokens(tokens))
 }
 
 fn compile_line(line: &str) -> Result<Token, Error> {
     let parts: Vec<&str> = line.split_whitespace().collect();
     match parts.as_slice() {
-        ["DRIVE", num] => Ok(Token::Drive(num.parse().unwrap())),
-        ["TURN", deg] => Ok(Token::Turn(deg.parse().unwrap())),
-        ["DELAY", num] => Ok(Token::Delay(num.parse().unwrap())),
-        ["//", text] => Ok(Token::Comment(text.to_string())),
-        _ => Err(Error::UnknownCommand(line)),
+        ["DRIVE", num] => num.parse().map(Token::Drive).map_err(|_| Error::ArgumentParseError(line.parse().unwrap())),
+        ["TURN", deg] => deg.parse().map(Token::Turn).map_err(|_| Error::ArgumentParseError(line.parse().unwrap())),
+        ["DELAY", num] => num.parse().map(Token::Delay).map_err(|_| Error::ArgumentParseError(line.parse().unwrap())),
+        ["//"] => Ok(Token::Comment),
+        _ => Err(Error::UnknownCommandError(line.parse().unwrap())),
     }
 }
 
@@ -39,7 +53,7 @@ fn generate_java_from_tokens(tokens: Vec<Token>) -> Vec<String> {
                 angle, angle
             )),
             Token::Delay(i) => java_lines.push(format!("        sleep({});", i)),
-            Token::Comment(_) => {}
+            Token::Comment => {}
         }
     }
     java_lines

@@ -37,9 +37,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let content = fs::read_to_string(&args.input)
         .with_context(|| format!("could not read file `{}`", args.input.display()))?;
 
-    let java_lines = compile_file(content).join("\n");
+    let java_lines = compile_file(content)
+        .with_context(|| format!("failed to compile the file `{}`", args.input.display()))?
+        .join("\n");
 
-    let template_path = PathBuf::from("src").join("..").join("templates").join("BasicOpModeLinear.java");
+    let template_path = PathBuf::from("src")
+        .join("..")
+        .join("templates")
+        .join("BasicOpModeLinear.java");
     let template_content = fs::read_to_string(&template_path)
         .with_context(|| format!("could not read template file `{}`", template_path.display()))?;
 
@@ -48,7 +53,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let insert_line = 51.min(template_lines.len());
     template_lines.splice(insert_line..insert_line, vec![java_lines]);
 
-    println!("{:?}", template_lines);
     let final_output = template_lines.join("\n");
 
     fs::write(&output, final_output)
