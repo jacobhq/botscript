@@ -1,0 +1,9 @@
+[package]
+name = "botscript"
+authors = ["Jacob Marshall <jacobm0@glynschool.org>"]
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.27", features = ["derive"] }
+anyhow = "1.0.95"
