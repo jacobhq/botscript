@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use botscript::compile_file;
+use botscript_lib::compile_file;
 use clap::Parser;
 use std::fs;
 use std::path::{Path, PathBuf};
