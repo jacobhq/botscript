@@ -11,6 +11,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.0.0-beta.9
         version: 4.0.6(vite@5.4.14(lightningcss@1.29.1))
+      botscript:
+        specifier: link:pkg
+        version: link:pkg
       react:
         specifier: ^19.0.0
         version: 19.0.0
@@ -33,6 +36,9 @@ importers:
       typescript:
         specifier: ^5.6.3
         version: 5.7.3
+      vite-plugin-wasm:
+        specifier: ^3.4.1
+        version: 3.4.1(vite@5.4.14(lightningcss@1.29.1))
 
 packages:
 
@@ -810,6 +816,11 @@ packages:
   url-search-params-polyfill@8.2.5:
     resolution: {integrity: sha512-FOEojW4XReTmtZOB7xqSHmJZhrNTmClhBriwLTmle4iA7bwuCo6ldSfbtsFSb8bTf3E0a3XpfonAdaur9vqq8A==}
 
+  vite-plugin-wasm@3.4.1:
+    resolution: {integrity: sha512-ja3nSo2UCkVeitltJGkS3pfQHAanHv/DqGatdI39ja6McgABlpsZ5hVgl6wuR8Qx5etY3T5qgDQhOWzc5RReZA==}
+    peerDependencies:
+      vite: ^2 || ^3 || ^4 || ^5 || ^6
+
   vite@5.4.14:
     resolution: {integrity: sha512-EK5cY7Q1D8JNhSaPKVK4pwBFvaTmZxEnoKXLG/U9gmdDcihQGNzFlgIvaxezFR4glP1LsuiedwMBqCXH3wZccA==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -1512,6 +1523,10 @@ snapshots:
       picocolors: 1.1.1
 
   url-search-params-polyfill@8.2.5: {}
+
+  vite-plugin-wasm@3.4.1(vite@5.4.14(lightningcss@1.29.1)):
+    dependencies:
+      vite: 5.4.14(lightningcss@1.29.1)
 
   vite@5.4.14(lightningcss@1.29.1):
     dependencies:

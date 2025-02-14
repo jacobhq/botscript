@@ -1,9 +1,11 @@
-import type { JSX } from 'react'
-import compile_file from "botscript"
+import {JSX, useEffect} from 'react'
+import init from "botscript"
 
 export default function IndexPage(): JSX.Element {
-  const foo = compile_file("foo");
-  // console.log(foo)
+  useEffect(() => {
+    init().then(r =>
+    console.log(r.web_compile_file("DRIVE 60")))
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-normal sm:justify-center p-4">

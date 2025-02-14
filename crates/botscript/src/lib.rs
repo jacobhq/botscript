@@ -40,6 +40,22 @@ impl fmt::Display for Error {
 
 impl std::error::Error for Error {}
 
+#[wasm_bindgen]
+pub fn web_compile_file(file: JsValue) -> JsValue {
+    let file_str: String = file.as_string().unwrap();
+
+    let mut tokens = Vec::new();
+
+    for line in file_str.lines() {
+        tokens.push(
+            compile_line(line).unwrap()
+        );
+    }
+
+    let java_code = generate_java_from_tokens(tokens);
+    JsValue::from_str(&java_code.join("\n"))
+}
+
 pub fn compile_file(file: String) -> Result<Vec<String>, Error> {
     let mut tokens = Vec::new();
     for line in file.lines() {
