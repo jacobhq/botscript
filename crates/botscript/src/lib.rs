@@ -1,4 +1,5 @@
 use std::fmt;
+use wasm_bindgen::prelude::*;
 
 enum Token {
     Drive(i32),
@@ -13,6 +14,21 @@ pub enum Error {
     ArgumentParseError(String)
 }
 
+#[wasm_bindgen]
+extern "C" {
+    // Use `js_namespace` here to bind `console.log(..)` instead of just
+    // `log(..)`
+    #[wasm_bindgen(js_namespace = console)]
+    pub fn log(s: &str);
+}
+
+#[macro_export]
+macro_rules! console_log {
+    // Note that this is using the `log` function imported above during
+    // `bare_bones`
+    ($($t:tt)*) => ($crate::log(&format_args!($($t)*).to_string()))
+}
+
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -23,6 +39,22 @@ impl fmt::Display for Error {
 }
 
 impl std::error::Error for Error {}
+
+#[wasm_bindgen]
+pub fn web_compile_file(file: JsValue) -> JsValue {
+    let file_str: String = file.as_string().unwrap();
+
+    let mut tokens = Vec::new();
+
+    for line in file_str.lines() {
+        tokens.push(
+            compile_line(line).unwrap()
+        );
+    }
+
+    let java_code = generate_java_from_tokens(tokens);
+    JsValue::from_str(&java_code.join("\n"))
+}
 
 pub fn compile_file(file: String) -> Result<Vec<String>, Error> {
     let mut tokens = Vec::new();
